@@ -1,0 +1,12 @@
+# Exécutables et binaires
+*.o
+*.exe
+a.out
+build/
+
+# Fichiers de log et de sortie
+training_log.txt
+
+# IDE
+.vscode/
+.idea/
