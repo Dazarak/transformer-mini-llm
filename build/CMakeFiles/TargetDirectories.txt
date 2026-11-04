@@ -1,3 +1,0 @@
-/home/greenpill/Git/Transformer/build/CMakeFiles/transformer.dir
-/home/greenpill/Git/Transformer/build/CMakeFiles/edit_cache.dir
-/home/greenpill/Git/Transformer/build/CMakeFiles/rebuild_cache.dir
