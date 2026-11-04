@@ -43,7 +43,7 @@ int main() {
 
     int vocabSize = tokenizer.size();
     int hiddenDim = 16;
-    float learningRate = 0.001f;
+    float learningRate = 0.002f;
     int epochs = 20000;
 
     std::ofstream logFile("training_log.txt");
@@ -55,7 +55,7 @@ int main() {
     // Initialisation des composants
     Embedding embedding(vocabSize, hiddenDim);
     SingleHeadAttention attention(hiddenDim);
-    NeuralNetwork mlp({ hiddenDim, hiddenDim*4, hiddenDim*4, vocabSize }, { 1, 1, 3 });
+    NeuralNetwork mlp({ hiddenDim, 16, 16, vocabSize }, { 1, 1, 3 });
 
     // Petit dataset d'exemples (Entrée -> Cible attendue)
     struct Sample {
