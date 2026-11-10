@@ -166,6 +166,11 @@ public:
         }
     }
 
+    // Feedforward du reseau de neurone 
+    // 
+    // INFO : La boucle ( for (size_t l = 0; l < layerSizes.size() - 1; ++l) { )
+    // Couche "l" = Couche déjà passer qui contient les sortie a passer a la prochaine couche
+    // Couche "l+1" = Couche pas passer qui va contenir les prochaine sortie du reseau de neuronne
     std::vector<float> feedForward(const std::vector<float>& input) {
         // Copie directe des entrées dans la mémoire continue des neurones
         std::copy(input.begin(), input.end(), neurons.begin() + neuronOffsets[0]);
@@ -185,12 +190,12 @@ public:
             size_t outStart = neuronOffsets[l + 1];
 
             // Multiplication matricielle sur liste à plat
-            for (int j = 0; j < outSize; ++j) {
-                float sum = biases[bStart + j];
-                for (int i = 0; i < inSize; ++i) {
-                    sum += neurons[inStart + i] * weights[wStart + i * outSize + j];
+            for (int j = 0; j < outSize; ++j) { // Pour outSaize, le nombre de sortie attendus de la couche (aussi nombre de neuronnes de la couche)
+                float sum = biases[bStart + j]; // valeur du biais du neurone de la couche "l+1"
+                for (int i = 0; i < inSize; ++i) { // Pour inSize, le nombre d'entré attendus par chaque neuronne de la couche l+1 et en même temps le nombre de sortie de la couche l.
+                    sum += neurons[inStart + i] * weights[wStart + i * outSize + j]; // produit scalaire (dot product) entre le vecteur d'entrée et le vecteur de poids du neurone
                 }
-                neurons[outStart + j] = activationFunction(sum, layerActivationF[l]);
+                neurons[outStart + j] = activationFunction(sum, layerActivationF[l]); // On passe le résultat du calcule dont j'ai oublier le nom mais comprend le but dans la fonction d'activation de la couche.
             }
         }
 
@@ -202,7 +207,7 @@ public:
         return std::vector<float>(neurons.begin() + outStart, neurons.begin() + outStart + outSize);
     }
 
-    std::vector<float> backPropagation(const std::veoutStartctor<float>& target, float learningRate) {
+    std::vector<float> backPropagation(const std::vector<float>& target, float learningRate) {
         size_t numLayers = layerSizes.size();
         std::vector<float> deltas(neurons.size(), 0.0f);
 
