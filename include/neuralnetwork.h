@@ -10,9 +10,9 @@ class NeuralNetwork {
 public:
     std::vector<int> layerSizes;
     std::vector<int> layerActivationF;
-    std::vector<float> weights;  // Tous les poids de toutes les couches mis bout à bout
-    std::vector<float> biases;   // Tous les biais mis bout à bout
-    std::vector<float> neurons;  // Toutes les activations de neurones d'un seul bloc
+    std::vector<float> weights;        // Tous les poids de toutes les couches mis bout à bout
+    std::vector<float> biases;         // Tous les biais mis bout à bout
+    std::vector<float> neurons;        // Toutes les activations de neurones d'un seul bloc
     
     std::vector<size_t> weightOffsets;
     std::vector<size_t> biasOffsets;
@@ -277,10 +277,6 @@ public:
         for (size_t i = 0; i < layerActivationF.size(); ++i) {
             file >> layerActivationF[i];
         }
-
-        // Recalcul automatique des offsets et redimensionnement des vecteurs internes
-        // (Appelle ici la même logique d'initialisation que dans ton constructeur)
-        // TODO : initializeNetworkStructure(); 
 
         // 3. Chargement des poids
         size_t weightsSize;
