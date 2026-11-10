@@ -55,6 +55,44 @@ public:
         }
     }
 
+    void InitializNeuralNetwork(const std::vector<int>& sizes, const std::vector<int>& actions) {
+        layerSizes = sizes;
+        layerActivationF = actions;
+        size_t totalWeights = 0;
+        size_t totalBiases = 0;
+        size_t totalNeurons = 0;
+
+        weightOffsets.push_back(0);
+        biasOffsets.push_back(0);
+        neuronOffsets.push_back(0);
+
+        for (size_t i = 0; i < sizes.size() - 1; ++i) {
+            totalWeights += sizes[i] * sizes[i + 1];
+            totalBiases += sizes[i + 1];
+            weightOffsets.push_back(totalWeights);
+            biasOffsets.push_back(totalBiases);
+        }
+        for (size_t i = 0; i < sizes.size(); ++i) {
+            totalNeurons += sizes[i];
+            neuronOffsets.push_back(totalNeurons);
+        }
+
+        weights.resize(totalWeights, 0.1f);
+        biases.resize(totalBiases, 0.0f);
+        neurons.resize(totalNeurons, 0.0f);
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::normal_distribution<float> dist(0.0f, 0.1f);
+
+        for (size_t i = 0; i < weights.size(); ++i) {
+            weights[i] = dist(gen);
+        }
+        for (size_t i = 0; i < biases.size(); ++i) {
+            biases[i] = 0.0f;
+        }
+    }
+
     float sigmoid(float x) {
         return 1 / (1 + exp(-x));
     }
@@ -133,15 +171,20 @@ public:
         std::copy(input.begin(), input.end(), neurons.begin() + neuronOffsets[0]);
 
         for (size_t l = 0; l < layerSizes.size() - 1; ++l) {
-            int inSize = layerSizes[l];
+            // Nombre d'entré de la couche "l"
+            int inSize = layerSizes[l]; 
+            //  Nombre de sortie de la couche "l" 
             int outSize = layerSizes[l + 1];
-            
-            size_t wStart = weightOffsets[l];
+            // Position du poid du premier neuronne de la couche "l" dans le tableau de poids
+            size_t wStart = weightOffsets[l]; 
+            // Position du biais du premier neuronne de la couche "l" lans le tableau de biais
             size_t bStart = biasOffsets[l];
+            // Position de la sortie du premier neuronne de la couche "l" lans le tableau de sortie de neurones
             size_t inStart = neuronOffsets[l];
+            // Position de la sortie du premier neuronne de la couche "l+1" lans le tableau de sortie de neurones
             size_t outStart = neuronOffsets[l + 1];
 
-            // Multiplication matricielle optimisée en cache CPU
+            // Multiplication matricielle sur liste à plat
             for (int j = 0; j < outSize; ++j) {
                 float sum = biases[bStart + j];
                 for (int i = 0; i < inSize; ++i) {
@@ -155,11 +198,11 @@ public:
         size_t lastLayerIdx = layerSizes.size() - 1;
         size_t outStart = neuronOffsets[lastLayerIdx];
         int outSize = layerSizes[lastLayerIdx];
-
+        // Retourne les valeur de sortie la dernière couches (couche output)
         return std::vector<float>(neurons.begin() + outStart, neurons.begin() + outStart + outSize);
     }
 
-    std::vector<float> backPropagation(const std::vector<float>& target, float learningRate) {
+    std::vector<float> backPropagation(const std::veoutStartctor<float>& target, float learningRate) {
         size_t numLayers = layerSizes.size();
         std::vector<float> deltas(neurons.size(), 0.0f);
 
